@@ -1,0 +1,58 @@
+    *{
+        margin:0;
+        padding:0;
+    }
+    a{
+        text-decoration:none;
+        color:black;
+    }
+
+    header,nav,section,footer{
+        margin:auto;
+    }
+    header{
+        width:700px;
+        height:100px;
+        background: blue;
+    }
+    header > h1{
+        text-align:center;
+        color:white;
+    }
+    header > span > a{
+        color:white;
+    }
+    nav{
+        width:700px;
+        height:30px;
+        background: red;
+    }
+    nav > ul{
+        list-style:none;
+    }
+    nav > ul > li{
+        float:left;
+        margin:2px;
+    }
+    nav > ul > li > a{
+        display:block;
+        padding:3px 2px;
+    }
+    nav > ul > li > a:hover{
+        background:black;
+        color:white;
+    }
+    section{
+        padding:10px 0 0 0;
+        width:700px;
+        height:500px;
+        background: gray;
+    }
+    section > h1{
+        text-align: center;
+    }
+    footer{
+        width:700px;
+        height:10px;
+        background: black;
+    }
