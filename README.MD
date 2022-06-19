@@ -4,17 +4,20 @@
 
 ---
 
-#####설치환경
+##### 설치환경
+
 Ubuntu 20.04 LTS
 
-#####라이브러리 설치
+##### 라이브러리 설치
+
 $ sudo apt-get update
 
 $ sudo apt-get install build-essential libc-ares-dev uuid-dev libssl-dev
 
 $ libcurl4-openssl-dev libmysqlclient-dev
 
-#####폴더 만들고 1.4.10 버전 다운받아서 압축 풀기
+##### 폴더 만들고 1.4.10 버전 다운받아서 압축 풀기
+
 $ cd ~/
 
 $ mkdir mosquitto_sources
@@ -25,26 +28,31 @@ $ wget http://mosquitto.org/files/source/mosquitto-1.4.10.tar.gz
 
 $ tar xvf mosquitto-1.4.10.tar.gz
 
-#####libwebsockets 설치 (라이브러리)
+##### libwebsockets 설치 (라이브러리)
+
 $ sudo apt-get install libwebsockets-dev
 
-#####config.mk 파일 수정
+##### config.mk 파일 수정
+
 $ WITH_WEBSOCKETS:=yes 로 변경 후 저장
 
-#####build해서 설치하기
+##### build해서 설치하기
+
 $ cd ~/mosquitto_sources/mosquitto-1.4.10/
 
 $ make
 $ sudo make install
 
-#####mosquitto.conf 파일에서 아래 내용 추가하기
+##### mosquitto.conf 파일에서 아래 내용 추가하기
+
 listener 9001
 protocol websockets
 
 listener 1883
 protocol mqtt
 
-#####Start Broker / 수정한 conf 파일로 시작하기
+##### Start Broker / 수정한 conf 파일로 시작하기
+
 $ mosquitto -c mosquitto.conf -v
 
 #### 지켜야할 사항
