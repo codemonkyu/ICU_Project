@@ -1,1 +1,1 @@
-docker run --name django-cameraweb -d -p 8000:8000 ljk0509/cctv_v1:1.2
+docker run --name django-cameraweb -d -p 8000:8000 ljk0509/cctv_v1_low:1.4

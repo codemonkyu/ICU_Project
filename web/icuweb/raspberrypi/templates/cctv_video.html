@@ -30,14 +30,14 @@
       function onConnect() {
         console.log("접속완료");
         //영상데이터가 전송될 때까지 대기
-        mqtt.subscribe("camera/frame");
+        mqtt.subscribe("web");
 
         //웹페이지 접속하자마자 메세지 보내기
-        message = new Paho.MQTT.Message("start");
+        //message = new Paho.MQTT.Message("start");
         //topic설정
-        message.destinationName = "web";
+        //message.destinationName = "web";
         //mqtt 메세지 보내기 - publish
-        mqtt.send(message);
+        //mqtt.send(message);
       }
       //callback함수-접속이 실패하면 호출되는 함수
       function onFailure() {
@@ -144,7 +144,7 @@
           document.write(date);
         </script>
       </div>
-      <img src="#" id="myimg" width="768" height="1024" />
+      <img src="#" id="myimg" width="320" height="240" />
     </div>
   </body>
 </html>
