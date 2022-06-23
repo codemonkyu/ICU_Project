@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <style>
+      .tablecl {
+        display: flex;
+        flex-direction: column;
+        float: left;
+        position: absolute;
+      }
+    </style>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"
+      type="text/javascript"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <script type="text/javascript">
+      var host = "52.79.159.146";
+      var port = 9001;
+      var mqtt;
+      //callback함수-접속이 완료된 후 호출되는 함수
+      /*1. broker서버와 접속이 완료되면 broker에 구독신청을 한다.
+          2. 메세지가 전송되면 호출될 콜백함수를 정의
+          3. 콜백함수를 등록한다.
+        */
+      function onConnect() {
+        console.log("접속완료");
+        //영상데이터가 전송될 때까지 대기
+        mqtt.subscribe("recordfolder");
+        mqtt.subscribe("startvideo");
+      }
+
+      //callback함수-접속이 실패하면 호출되는 함수
+      function onFailure() {
+        console.log("접속실패" + host + "," + port);
+        setTimeout(MQTTconnect, reconnectTimeout);
+      }
+
+      function sendMsg(topic, msg) {
+        //alert(msg);
+        /*
+            1. message객체 생성하기
+            2. 토픽을 설정
+            3. send메소드를 호출
+            */
+        message = new Paho.MQTT.Message(msg);
+        message.destinationName = topic; // topic 설정
+        //mqtt 메시지 보내기 - publish
+        mqtt.send(message);
+      }
+      function sendMsg2(msg) {
+        //alert(msg);
+        /*
+            1. message객체 생성하기
+            2. 토픽을 설정
+            3. send메소드를 호출
+            */
+        message = new Paho.MQTT.Message(msg);
+        message.destinationName = "startvideo"; // topic 설정
+        //mqtt 메시지 보내기 - publish
+        mqtt.send(message);
+      }
+
+      function sleep(ms) {
+        const wakeUpTime = Date.now() + ms;
+        while (Date.now() < wakeUpTime) {}
+      }
+
+      //2. 메세지가 전송되면 호출될 콜백함수를 정의
+      function div_hide(name) {
+        document.getElementById(name).style.display = "none";
+      }
+
+      function onMessageArrived(msg) {
+        if (msg.destinationName == "recordfolder") {
+          console.log("myfile======" + msg.destinationName + "===<br/>");
+          console.log("folderlist:" + msg.payloadString + "<br/>");
+          var myarr = msg.payloadString.split(",");
+
+          for (let i = 0; i < myarr.length; i++) {
+            var my_tbody = document.getElementById("my-tbody");
+            // var row = my_tbody.insertRow(0); // 상단에 추가
+            var row = my_tbody.insertRow(my_tbody.rows.length); // 하단에 추가
+            var cell1 = row.insertCell(0);
+            var data = myarr[i];
+            console.log(myarr[i]);
+            cell1.innerHTML =
+              "<a href=javascript:sendMsg2('" +
+              data +
+              "')>" +
+              myarr[i] +
+              "</a>";
+          }
+        } else if (msg.destinationName == "startvideo") {
+          let mymsg = msg.payloadString;
+          console.log("시작하는 영상:" + msg.payloadString);
+          let video = document.querySelector("#video1");
+          video.removeAttribute("src");
+          let str2 = "{% static 'mp4' %}".replace(
+            "mp4",
+            "recordvideo/" + msg.payloadString
+          );
+          video.src = str2; //data='b.mp4'
+          video.play();
+        }
+      }
+
+      function MQTTConnect() {
+        console.log("mqtt접속:" + host + "," + port);
+        //mqtt통신을 위한 클라이언트 객체 생성
+        mqtt = new Paho.MQTT.Client(host, port, "javascript_client"); //"javascropt_client"는 클라이언트 id
+        //mqtt통신을 위해 필요한 설정을 명시
+        var options = {
+          timeout: 3,
+          onSuccess: onConnect, //접속 성공했을 때 실행될 callback함수 등록
+          onFailure: onFailure,
+        };
+        //3.콜백함수 등록
+        mqtt.onMessageArrived = onMessageArrived;
+        mqtt.connect(options);
+      }
+    </script>
+  </head>
+  <body class="container">
+    <script type="text/javascript">
+      //사용자 정의 함수를 호출해서 mqtt가 동작할 수 있도록 해준다
+      MQTTConnect();
+    </script>
+    <div>
+      <script type="text/javascript">
+        MQTTConnect();
+      </script>
+      <!--        <img src="#" id="myimg" width="720" height="960"/>-->
+    </div>
+    <div>
+      <video id="video1" controls width="900" height="600">
+        <video autoplay src="#" type="video/mp4" />
+      </video>
+    </div>
+    <div id="btnhide">
+      <button onclick="sendMsg('listplz','listplz');div_hide('btnhide');">
+        영상 리스트
+      </button>
+    </div>
+    <div id="tablecl" style="margin: 10px; font-size: 50px">
+      <table style="width: 500px">
+        <thead>
+          <th>저장된 영상 기록</th>
+        </thead>
+        <tbody id="my-tbody"></tbody>
+      </table>
+    </div>
+  </body>
+</html>

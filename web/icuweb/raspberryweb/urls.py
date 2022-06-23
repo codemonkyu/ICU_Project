@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from raspberrypi import views
+
 urlpatterns = [
-    path('cctvvideo/',views.cctvvideo,name="cctvvideo")
+    path('',views.cctvvideo,name="cctvvideo"),
+    path('cctvrecord/',views.cctvrecord,name="cctvrecord")
 ]

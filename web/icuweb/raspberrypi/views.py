@@ -5,6 +5,6 @@ from django.http import HttpResponse
 def cctvvideo(request):
     return render(request,'cctv_video.html')
 
-def cctvvideorecord(request):
-    return render(request,'cctv_videorecord.html')
+def cctvrecord(request):
+    return render(request, 'cctv_record.html')
 

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'raspberrypi',
     'corsheaders',
     'sslserver',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -104,7 +106,7 @@ WSGI_APPLICATION = 'raspberryweb.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-#
+
 
 DATABASES = {
     'default': {
@@ -157,9 +159,37 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+## 정적파일 저장경로
+STATIC_URL = '/static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+### 장고에서 정적 파일을 s3 static폴더에 저장
+STATIC_ROOT = ''
+STATIC_URL = '/static/'
+STATIC_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+
+
+#AWS s3 액세스
+AWS_ACCESS_KEY_ID = '*'
+AWS_SECRET_ACCESS_KEY = '*'
+AWS_STORAGE_BUCKET_NAME = 'icu-group7-s3'
+AWS_REGION = 'ap-northeast-2'
+AWS_S3_CUSTOM_DOMAIN = 'icu-group7-s3.s3.ap-northeast-2.amazonaws.com' 
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_DEFAULT_ACL = 'public-read'
+AWS_LOCATION = 'static'
+  
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
