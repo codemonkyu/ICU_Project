@@ -3,18 +3,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>ICU CCTV Live</title>
+    <title>ICU CCTV Live_web2</title>
+
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"
       type="text/javascript"
     ></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
-    <!-- 현재시간 css -->
+    <!-- css -->
     <style media="screen">
       #divClock {
-        font-size: 15px;
+        font-size: 30px;
         color: black;
+        font-weight: bold;
+      }
+      h {
+        color: black;
+        font-size: 80px;
+        font-weight: bold;
+      }
+      #divDate {
+        font-size: 30px;
+        font-weight: bold;
+      }
+      body {
+        background-color: aqua;
       }
     </style>
 
@@ -30,7 +45,7 @@
       function onConnect() {
         console.log("접속완료");
         //영상데이터가 전송될 때까지 대기
-        mqtt.subscribe("web");
+        mqtt.subscribe("web2");
 
         //웹페이지 접속하자마자 메세지 보내기
         //message = new Paho.MQTT.Message("start");
@@ -75,7 +90,9 @@
         //자바스크립트에서 문자열을 base64로 인코드하려면 btoa메소드를 이용해서 변환
         //broker에게 전송받은 payloadBytes를 btoa메소드에서 변경할 수 있도록 문자열로 변환해서 전달
         document.getElementById("myimg").src =
-          "data:image/jpeg;base64," + msg.payloadString;
+          "data:image/jpeg;base64," + msg.payloadStrings;
+        //btoa(String.fromCharCode.apply(null, msg.payloadBytes))
+
         //save1=btoa(String.fromCharCode.apply(null,msg.payloadBytes))
       }
 
@@ -103,7 +120,7 @@
       function showClock() {
         var currentDate = new Date();
         var divClock = document.getElementById("divClock");
-        var msg = "Time : ";
+        var msg = "현재 시간 : ";
         if (currentDate.getHours() > 12) {
           //시간이 12보다 크다면 오후 아니면 오전
           msg += "오후 ";
@@ -135,16 +152,18 @@
       <script type="text/javascript">
         MQTTConnect();
       </script>
+      <h>실시간 영상 확인(web2)</h>
+
       <div id="divClock" class="clock"></div>
 
-      <div>
-        Date :
+      <div id="divDate">
+        날짜 :
         <script>
           date = new Date().toLocaleDateString();
           document.write(date);
         </script>
       </div>
-      <img src="#" id="myimg" width="320" height="240" />
+      <img src="#" id="myimg" width="800" height="600" />
     </div>
   </body>
 </html>

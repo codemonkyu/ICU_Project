@@ -18,6 +18,7 @@ from django.urls import path
 from raspberrypi import views
 
 urlpatterns = [
-    path('',views.cctvvideo,name="cctvvideo"),
-    path('cctvrecord/',views.cctvrecord,name="cctvrecord")
+    path('',views.cctvweb,name="cctvweb"),
+    path('cctvweb2/',views.cctvweb2,name="cctvweb2"),
+    path('cctvrecord/',views.cctvrecord,name="cctvrecord"),
 ]

@@ -2,12 +2,55 @@
 {% load static %}
 <html lang="en">
   <head>
+    <!-- css -->
     <style>
       .tablecl {
         display: flex;
         flex-direction: column;
         float: left;
         position: absolute;
+        font-size: 30px;
+      }
+      th {
+        color: black;
+        padding-top: 10px
+      }
+      #test_btn1 {
+        color: black
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        width: 200px;
+        height: 50px;
+        font-size: 110%;
+        font-weight: bold;
+        border: white;
+        position: relative;
+      }
+      #btnhide button:hover {
+        color: white;
+        background-color: skyblue;
+      }
+      my-tbody {
+        width: 500px;
+      }
+      a:visited {
+        text-decoration: none;
+        border: rgba(140, 89, 185, 0.3) solid;
+        border-width: 0 0 6px 0;
+      }
+      a {
+        color: black;
+        display: inline;
+        padding-left: 150px;
+      }
+      body {
+        background-color: #c8dfea;
+      }
+      hr {
+        height: 5px;
+        background-color:skyblue
       }
     </style>
     <meta charset="UTF-8" />
@@ -137,19 +180,23 @@
       <!--        <img src="#" id="myimg" width="720" height="960"/>-->
     </div>
     <div>
-      <video id="video1" controls width="900" height="600">
+      <video id="video1" controls width="1000" height="600">
         <video autoplay src="#" type="video/mp4" />
       </video>
     </div>
     <div id="btnhide">
-      <button onclick="sendMsg('listplz','listplz');div_hide('btnhide');">
-        영상 리스트
+      <button
+        id="test_btn1"
+        onclick="sendMsg('listplz','listplz');div_hide('btnhide');"
+      >
+        저장된 영상 확인하기
       </button>
     </div>
     <div id="tablecl" style="margin: 10px; font-size: 50px">
-      <table style="width: 500px">
+      <table style="width: 1000px">
         <thead>
-          <th>저장된 영상 기록</th>
+          <hr />
+          <th>저장된 이상행동 감지 영상</th>
         </thead>
         <tbody id="my-tbody"></tbody>
       </table>

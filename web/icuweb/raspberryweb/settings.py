@@ -159,8 +159,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-## 정적파일 저장경로
-STATIC_URL = '/static/'
 
 
 # Default primary key field type
@@ -169,13 +167,10 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
-
-### 장고에서 정적 파일을 s3 static폴더에 저장
+### 정적파일경로
 STATIC_ROOT = ''
 STATIC_URL = '/static/'
 STATIC_DIRS = (os.path.join(BASE_DIR, 'static'),)
-
 
 
 #AWS s3 액세스

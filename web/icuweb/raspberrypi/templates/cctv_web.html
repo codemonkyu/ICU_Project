@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ICU CCTV Live</title>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"
+      type="text/javascript"
+    ></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+    <!-- css -->
+    <style media="screen">
+      #divClock {
+        font-size: 30px;
+        color: black;
+        font-weight: bold;
+      }
+      h {
+        color: black;
+        font-size: 80px;
+        font-weight: bold;
+        padding-left: 190px;
+      }
+      #divDate {
+        font-size: 30px;
+        font-weight: bold;
+      }
+      body {
+        background-color: #c8dfea;
+      }
+    </style>
+
+    <script type="text/javascript">
+      var host = "52.79.159.146";
+      var port = 9001;
+      var mqtt;
+      //callback함수-접속이 완료된 후 호출되는 함수
+      /*1. broker서버와 접속이 완료되면 broker에 구독신청을 한다.
+          2. 메세지가 전송되면 호출될 콜백함수를 정의
+          3. 콜백함수를 등록한다.
+        */
+      function onConnect() {
+        console.log("접속완료");
+        //영상데이터가 전송될 때까지 대기
+        mqtt.subscribe("web");
+
+        //웹페이지 접속하자마자 메세지 보내기
+        //message = new Paho.MQTT.Message("start");
+        //topic설정
+        //message.destinationName = "web";
+        //mqtt 메세지 보내기 - publish
+        //mqtt.send(message);
+      }
+      //callback함수-접속이 실패하면 호출되는 함수
+      function onFailure() {
+        console.log("접속실패" + host + "," + port);
+        setTimeout(MQTTconnect, reconnectTimeout);
+      }
+      function sleep(ms) {
+        const wakeUpTime = Date.now() + ms;
+        while (Date.now() < wakeUpTime) {}
+      }
+
+      function writeFile(name, msg) {
+        if (name == "") return false;
+        var defaultpath = "C:\2022_IoT\work\smarthome\file"; // 기록하고자 하는 경로. ex) C:\\Program Files\\logs
+        var fileObject = new ActiveXObject("Scripting.FileSystemObject");
+        var fullpath = defaultpath + "\\" + name;
+        // 파일이 생성되어있지 않으면 새로 만들고 기록
+        if (!fileObject.FileExists(fullpath)) {
+          var fWrite = fileObject.CreateTextFile(fullpath, false);
+          fWrite.write(msg);
+          fWrite.close();
+        } else {
+          // 파일이 이미 생성되어 있으면 appending 모드로 파일 열고 기록
+          var fWrite = fileObject.OpenTextFile(fullpath, 8);
+          fWrite.write(msg);
+          fWrite.close();
+        }
+      }
+
+      //2. 메세지가 전송되면 호출될 콜백함수를 정의
+      var myarr = new Array();
+      function onMessageArrived(msg) {
+        //전송되는 payloadBytes를 이미지로 만들어서 이미지태그에 연결
+        //바이너이데이터를 인코딩해야 할 경우 Base64
+        //자바스크립트에서 문자열을 base64로 인코드하려면 btoa메소드를 이용해서 변환
+        //broker에게 전송받은 payloadBytes를 btoa메소드에서 변경할 수 있도록 문자열로 변환해서 전달
+        document.getElementById("myimg").src =
+          "data:image/jpeg;base64," +
+          btoa(String.fromCharCode.apply(null, msg.payloadBytes));
+
+        //save1=btoa(String.fromCharCode.apply(null,msg.payloadBytes))
+      }
+
+      function videostart() {
+        document.getElementById("myimg1").src =
+          "data:image/jpeg;base64," + save1;
+      }
+
+      function MQTTConnect() {
+        console.log("mqtt접속:" + host + "," + port);
+        //mqtt통신을 위한 클라이언트 객체 생성
+        mqtt = new Paho.MQTT.Client(host, port, "javascript_client"); //"javascropt_client"는 클라이언트 id
+        //mqtt통신을 위해 필요한 설정을 명시
+        var options = {
+          timeout: 3,
+          onSuccess: onConnect, //접속 성공했을 때 실행될 callback함수 등록
+          onFailure: onFailure,
+        };
+        //3.콜백함수 등록
+        mqtt.onMessageArrived = onMessageArrived;
+        mqtt.connect(options);
+      }
+
+      //현재시간
+      function showClock() {
+        var currentDate = new Date();
+        var divClock = document.getElementById("divClock");
+        var msg = "현재 시간 : ";
+        if (currentDate.getHours() > 12) {
+          //시간이 12보다 크다면 오후 아니면 오전
+          msg += "오후 ";
+          msg += currentDate.getHours() - 12 + "시 ";
+        } else {
+          msg += "오전 ";
+          msg += currentDate.getHours() + "시 ";
+        }
+
+        msg += currentDate.getMinutes() + "분 ";
+        msg += currentDate.getSeconds() + "초";
+
+        divClock.innerText = msg;
+
+        if (currentDate.getMinutes() > 58) {
+          //정각 1분전부터 빨강색으로 출력
+          divClock.style.color = "red";
+        }
+        setTimeout(showClock, 1000); //1초마다 갱신
+      }
+    </script>
+  </head>
+  <body class="container" onload="showClock()">
+    <script type="text/javascript">
+      //사용자 정의 함수를 호출해서 mqtt가 동작할 수 있도록 해준다
+      MQTTConnect();
+    </script>
+    <div>
+      <script type="text/javascript">
+        MQTTConnect();
+      </script>
+      <h>실시간 영상 확인</h>
+
+      <div id="divClock" class="clock"></div>
+
+      <div id="divDate">
+        날짜 :
+        <script>
+          date = new Date().toLocaleDateString();
+          document.write(date);
+        </script>
+      </div>
+      <img src="#" id="myimg" width="970" height="600" />
+    </div>
+  </body>
+</html>
