@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <style>
+    table {
+      width: 100%;
+      border-top: 1px solid #444444;
+      border-collapse: collapse;
+    }
+  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js"
+      type="text/javascript"
+    ></script>
+    <script type="text/javascript">
+      var host = "52.79.159.146";
+      var port = 9001;
+      var mqtt;
+      //callback함수 - 접속이 완료된 후 호출되는 함수
+      /*1. broker서버와 접속이 완료되면 broker에 구독 신청
+      2. 메시지가 전송되면 호출될 callback함수를 정의
+      3. 콜백함수를 등록한다.
+    */
+      function onConnect() {
+        console.log("접속완료");
+        mqtt.subscribe("iot/mag"); //1. broker서버와 접속이 완료되면 broker에 구독 신청
+      }
+      //callback함수 - 접속이 실패하면 호출되는 함수
+      function onFailure() {
+        console.log("접속실패");
+      }
+
+      //2. 메시지가 전송되면 호출될 callback함수를 정의
+      function onMessageArrived(msg) {
+        //매개변수 msg는 꼭 정의해야 한다.
+        //broker에서 메시지를 전송하면 onMessageArrived를 호출하면서
+        //이 함수의 매개변수로 메시지를 전달
+        //msg는 Message객체가 전달
+        console.log("msg:" + msg.payloadString);
+
+        //mqtt로 전송된 메시지를 웹페이지에 적용
+        //웹페이지에 출력할 데이터
+        out_msg = "메시지 전달 : " + msg.payloadString;
+        if (msg.payloadString == "door : open") {
+          content = document.getElementById("door"); //id가 data로 정의된 element를 찾아오는 작업
+          const i = document.createElement("p");
+          location.href = "/hong";
+        }
+      }
+
+      //publish하는 함수 정의
+      function sendMSG(msg) {
+        //alert(msg)
+        /*
+        1.message객체를 생성하기
+        2.토픽을 설정
+        3.send메소드를 호출
+        */
+        message = new Paho.MQTT.Message(msg);
+        message.destinationName = "iot/pir"; //토픽 설정
+        //mqtt메시지 보내는 작업 - publish
+        mqtt.send(message);
+      }
+      //mqtt통신을 관리하기 위한 사용자 정의 함수
+      function MQTTConnect() {
+        console.log("mqtt접속" + host + "," + port);
+        //mqtt통신을 위한 클라이언트 객체 생성
+        mqtt = new Paho.MQTT.Client(host, port, "javascript_client"); //"javascript_client"는 클라이언트 id, 토픽 아니다.
+        //mqtt통신을 위해 필요한 설정을 명시
+        var options = {
+          timeout: 3,
+          onSuccess: onConnect, //접속 성공했을때 실행될 콜백 함수 등록
+          onFailure: onFailure,
+        };
+        //위에서 : 왼쪽의 것들은 정해진 코드이니 문자 그대로 쓰고 : 오른쪽의 것들은 내맘대로 정의
+        //
+
+        //3. 메시지가 도착하면 실행될 콜백함수를 등록한다.
+        mqtt.onMessageArrived = onMessageArrived;
+        mqtt.connect(options);
+      }
+    </script>
+  </head>
+  <body bgcolor="#c8dfea">
+    <div id="door">Door Log Here...</div>
+    <table id="doordata">
+      <thead>
+        <tr>
+          <th>문상태</th>
+          <td>열린 시간</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% if question_list %} {% for door in question_list %}
+        <tr>
+          <td>{{door.doorstate}}</td>
+          <td>{{door.opentime}}</td>
+        </tr>
+        {% endfor %} {% else %}
+        <tr>
+          <td colspan="8">No Data.</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    <script type="text/javascript">
+      MQTTConnect();
+    </script>
+  </body>
+</html>

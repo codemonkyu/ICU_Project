@@ -27,8 +27,6 @@ SECRET_KEY = 'django-insecure-5st-kvbxesd-smu=kd94oi*hs_gd7)e8s9ah%vmob1k9m!demf
 DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
-# ALLOWED_HOSTS = ["35.176.170.222"]
-#ALLOWED_HOSTS = ["172.30.1.2"] 제약 두고싶으면
 
 # Application definition
 
@@ -108,23 +106,23 @@ WSGI_APPLICATION = 'raspberryweb.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'smarthome',
-#         'USER': 'root',
-#         'PASSWORD': '111111',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'icu',
+        'USER': 'icu',
+        'PASSWORD': 'qwer1234',
+        'HOST': 'database-1.cty1s3gahbfs.ap-northeast-2.rds.amazonaws.com',
+        'PORT': '3306',
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -149,11 +147,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_L10N = True
+
+USE_TZ = False
+
+
 
 
 # Static files (CSS, JavaScript, Images)

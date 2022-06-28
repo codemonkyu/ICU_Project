@@ -1,0 +1,96 @@
+Metadata-Version: 2.1
+Name: django-request-mapping
+Version: 0.0.12
+Summary: spring-like request_mapping for django.
+Home-page: https://github.com/sazima/django-request-mapping
+Author: wukt
+Author-email: w@wktadmin.com
+License: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown
+
+Make urlpatterns more human-readable.
+
+#### Requirements
+```bash
+django == 2.x
+```
+notice: I haven't tested it in version 3.x, so I don't know if it is supported, if there is any result, you can tell me
+
+#### Install
+
+Install and update using pip:
+
+
+```python
+pip install -U  django-request-mapping
+```
+
+
+#### A Simple Example
+
+
+view.py
+
+```python
+from django_request_mapping import request_mapping
+
+
+@request_mapping("/user")
+class UserView(View):
+
+    @request_mapping("/login/", method="post")
+    def login(self, request):
+        data = request.POST
+        return HttpResponse("ok")
+
+    @request_mapping("/signup/", method="post")
+    def signup(self, request):
+        return HttpResponse("ok")
+
+    @request_mapping("/<int:user_id>/role/")
+    def get_role(self, request, user_id):
+       return HttpResponse("ok") 
+
+    @request_mapping("/<int:pk/", method='delete')
+    def delete(self, request, pk):
+        User.objects.filter(pk=pk).delete()
+        return HttpResponse("ok")
+
+
+@request_mapping("/role")
+class RoleView(View):
+    # ...
+
+```
+
+
+urls.py
+```python
+from django_request_mapping import UrlPattern
+urlpatterns = UrlPattern()
+urlpatterns.register(UserView)
+urlpatterns.register(RoleView)
+```
+
+and request urls are:
+
+```bash
+post:  http://localhost:8000/user/login/
+post:  http://localhost:8000/user/signup/
+
+get:  http://localhost:8000/user/1/role/
+delete: http://localhost:8000/user/1/
+# ...
+```
+
+
+#### Full Example
+
+https://github.com/sazima/django-request-mapping/tree/master/example
+
+
+
