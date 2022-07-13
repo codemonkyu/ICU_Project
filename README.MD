@@ -218,3 +218,59 @@ AWS RDS를 사용하여 Mysql을 만들어 서비스에서 사용자의 사용�
 ---
 
 ## 5. AWS RDS - Mysql 생성하기
+
+- AWS RDS : MySQL DB인스턴스 만들기
+
+1. 리전 선택하기!
+2. Create database
+3. Select engine에서 Mysql 선택
+   (프리티어 사용자일 경우 밑의 only enable options eligible for RDS Free Usage Tier 선택!)
+4. DB인스턴스를 구성한다.
+
+- License model: MySQL의 일반 라이선스 계약을 사용하도록 기본값인 general-public-license를 선택합니다. MySQL에는 단 하나의 라이선스 모델만 있습니다.
+
+DB engine version: MySQL의 기본 버전을 선택합니다. 일부 리전에서는 Amazon RDS가 여러 버전의 MySQL을 지원합니다.
+
+DB instance class: db.t2.micro --- 1vCPU, 1 GIB RAM을 선택합니다. 이는 1GB 메모리 및 1vCPU에 해당합니다. 지원되는 인스턴스 클래스 목록을 보려면 Amazon RDS 제품 세부 정보를 참조하십시오.
+
+Multi-AZ deployment: 다중 AZ 배포에 대해서는 비용이 부과됩니다. 다중 AZ 배포를 사용하면 다른 가용 영역에 동기식 예비 복제본을 자동으로 프로비저닝하고 유지합니다.
+
+Storage type: General Purpose (SSD)를 선택합니다. 스토리지에 대한 자세한 내용은 Amazon RDS용 스토리지를 참조하십시오.
+
+Allocated storage: 기본값인 20을 선택하여 데이터베이스에 20GB의 스토리지를 할당합니다. Amazon RDS for MySQL에서는 최대 16TB까지 확장할 수 있습니다.
+
+Enable storage autoscaling: 워크로드가 주기적이거나 예측할 수 없는 경우 스토리지 autoscaling을 활성화하여 필요할 때 RDS가 스토리지를 자동으로 확장하도록 하십시오. 이 자습서에서는 이 옵션을 적용하지 않습니다.
+Settings:
+
+DB instance identifier: 선택한 리전의 계정에 대해 고유한 DB 인스턴스 이름을 입력합니다. 본 자습서에서는 이름을 rds-mysql-10minTutorial로 지정합니다.
+Master username: DB 인스턴스에 로그인할 때 사용할 사용자 이름을 입력합니다. 본 예제에서는 masterUsername을 사용합니다.
+Master password: 마스터 사용자 암호에 8~41개의 인쇄용 ASCII 문자(/, " 및 @ 제외)가 포함된 암호를 입력합니다.
+
+Confirm password: 암호를 다시 입력합니다.
+
+5. Configure Advanced Settings 페이지
+
+- 필요한 추가 정보를 설정을 할 수 있다.
+
+---
+
+## 6. ubuntu 사용자 변경 및 권한 주기
+
+- 리눅스는 멀티유저 운영체재로서 여러명의 사용자가 시스템에 접근이 가능하고 사용자별로 파일및 디렉터리에 대한 소유권/권한을 설정하여 보안적인 부분을 컨트롤 할 수 있다.
+
+* 트러블슈팅 배경: 이번 프로젝트에서 여러 사용자중 하나인 사용자에 특정 디렉터리에 대한 권한을 설정할 일이 생겼다. 자주 사용하는 작업이기 때문에 정리할 필요성을 느꼈다.
+
+- 정리
+
+1. chmod: 파일과 디렉터리의 권한을 변경할 때 사용한다.
+   ls -l 명령어를 사용하여 현재 경로에 위차하는 파일들의 권한을 조회해 볼 수 있다.
+
+![image](https://user-images.githubusercontent.com/98939242/178762909-165f4c83-b2ae-4c3b-8ce7-6e8232198b9b.png)
+
+위와 같이 조회 되는 것을 확인 할 수 있다.
+
+여기서 소유자, 소유그룹에 대한 개념을 먼저 숙지하고 있어야한다.
+소유자: 파일의 주인을 말한다.
+소유그룹: 계정을 그룹화 해놓은 것을 말한다. 즉 소유자가 아니더라도 특정 그룹에 대한 권한을 전체적으로 수정함으로써 그룹 권한으로 파일을 다룰 수 있다.
+
+![image](https://user-images.githubusercontent.com/98939242/178763827-2c760454-763f-447f-bed8-9c455b192a58.png)
