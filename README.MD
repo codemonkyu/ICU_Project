@@ -330,8 +330,8 @@ ex2) $chmod o-xw Music
 
 - 권한 변경하기 (숫자를 이용하여 변경하는 방법)
 
-r = 4
-w = 2
+r = 4,
+w = 2,
 x = 1
 
 ex1) $ chmod 755 Music
@@ -353,4 +353,5 @@ ex1) $ chmod 755 Music
 4. sudo python3 [웹 파이썬 파일명] 으로 정적 웹을 실행시켜준다.
    ( \* 이때 중요한 점은 웹 파이썬 파일에서
    app.run(host='0.0.0.0', port=80) 으로 설정해줘야한다. 이유는 80포트는 포트번호가 자동으로 생략되기 때문이다. 만약 정적웹에서 주소에 포트번호를 5000또는 8080으로 일일히 붙여줬다면 해당 포트번호를 입력해준다.)
+   <br>
    ![image](https://user-images.githubusercontent.com/98939242/178996187-7d4a97e1-de90-4976-a871-ac2559bebaec.png)
